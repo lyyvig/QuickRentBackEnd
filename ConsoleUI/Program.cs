@@ -13,14 +13,57 @@ namespace ConsoleUI {
 
             CarTest();
 
-            CarDetalDtoTest();
+            CarDetailDtoTest();
 
+            UserTest();
 
+            CustomerTest();
 
+            RentalTest();
 
         }
 
-        private static void CarDetalDtoTest() {
+        private static void RentalTest() {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+
+            Console.WriteLine("\n--------Rental-------");
+            var result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 1, RentDate = new DateTime(2021, 11, 19), ReturnDate = new DateTime(2021, 11, 20) });
+            Console.WriteLine(result.Message);
+
+            result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 2, RentDate = new DateTime(2021, 11, 20) });
+            Console.WriteLine(result.Message);
+
+            result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 1, RentDate = new DateTime(2021, 11, 20) });
+            Console.WriteLine(result.Message);
+        }
+
+        private static void CustomerTest() {
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+
+            Console.WriteLine("\n--------Customer-------");
+            var result = customerManager.Add(new Customer { Id = 1, CompanyName = "Lyvig" });
+            Console.WriteLine(result.Message);
+
+            result = customerManager.Add(new Customer { Id = 2, CompanyName = "Corpo" });
+            Console.WriteLine(result.Message);
+            
+            result = customerManager.Add(new Customer { Id = 3, CompanyName = "Corp" });
+            Console.WriteLine(result.Message);
+        }
+
+        private static void UserTest() {
+            UserManager userManager = new UserManager(new EfUserDal());
+
+
+            Console.WriteLine("\n--------USER-------");
+            var result = userManager.Add(new User { FirstName = "Baris", LastName = "Bilir", EMail = "baris.blirr@gmail.com", Password = "123456789" });
+            Console.WriteLine(result.Message);
+
+            result = userManager.Add(new User { FirstName = "Mert", LastName = "Patlar", EMail = "abc@gmail.com", Password = "1234567890" });
+            Console.WriteLine(result.Message);
+        }
+
+        private static void CarDetailDtoTest() {
             CarManager carManager = new CarManager(new EfCarDal());
 
             Console.WriteLine("\n--------CAR DETAIL-------");
