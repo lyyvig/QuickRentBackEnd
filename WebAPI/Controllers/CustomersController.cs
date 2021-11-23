@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class ColorController : ControllerBase {
-        IColorService _colorManager;
+    public class CustomersController : ControllerBase {
+        ICustomerService _customerManager;
 
-        public ColorController(IColorService colorManager) {
-            _colorManager = colorManager;
+        public CustomersController(ICustomerService customerManager) {
+            _customerManager = customerManager;
         }
 
         [HttpGet("get")]
-        public IActionResult GetAll(int id) {
-            var result = _colorManager.Get(id);
+        public IActionResult Get(int id) {
+            var result = _customerManager.Get(id);
             if (result.Success) {
                 return Ok(result);
             }
@@ -28,7 +28,7 @@ namespace WebAPI.Controllers {
 
         [HttpGet("getall")]
         public IActionResult GetAll() {
-            var result = _colorManager.GetAll();
+            var result = _customerManager.GetAll();
             if (result.Success) {
                 return Ok(result);
             }
@@ -36,8 +36,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Color color) {
-            var result = _colorManager.Add(color);
+        public IActionResult Add(Customer customer) {
+            var result = _customerManager.Add(customer);
             if (result.Success) {
                 return Ok(result);
             }
@@ -45,8 +45,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(Color color) {
-            var result = _colorManager.Delete(color);
+        public IActionResult Delete(Customer customer) {
+            var result = _customerManager.Delete(customer);
             if (result.Success) {
                 return Ok(result);
             }
@@ -54,8 +54,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("update")]
-        public IActionResult Update(Color color) {
-            var result = _colorManager.Update(color);
+        public IActionResult Update(Customer customer) {
+            var result = _customerManager.Update(customer);
             if (result.Success) {
                 return Ok(result);
             }

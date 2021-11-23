@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase {
-        IBrandService _brandService;
+    public class ColorsController : ControllerBase {
+        IColorService _colorManager;
 
-        public BrandController(IBrandService brandService) {
-            _brandService = brandService;
+        public ColorsController(IColorService colorManager) {
+            _colorManager = colorManager;
         }
 
         [HttpGet("get")]
-        public IActionResult GetAll(int id) {
-            var result = _brandService.Get(id);
+        public IActionResult Get(int id) {
+            var result = _colorManager.Get(id);
             if (result.Success) {
                 return Ok(result);
             }
@@ -28,7 +28,7 @@ namespace WebAPI.Controllers {
 
         [HttpGet("getall")]
         public IActionResult GetAll() {
-            var result = _brandService.GetAll();
+            var result = _colorManager.GetAll();
             if (result.Success) {
                 return Ok(result);
             }
@@ -36,8 +36,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Brand brand) {
-            var result = _brandService.Add(brand);
+        public IActionResult Add(Color color) {
+            var result = _colorManager.Add(color);
             if (result.Success) {
                 return Ok(result);
             }
@@ -45,8 +45,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(Brand brand) {
-            var result = _brandService.Delete(brand);
+        public IActionResult Delete(Color color) {
+            var result = _colorManager.Delete(color);
             if (result.Success) {
                 return Ok(result);
             }
@@ -54,8 +54,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("update")]
-        public IActionResult Update(Brand brand) {
-            var result = _brandService.Update(brand);
+        public IActionResult Update(Color color) {
+            var result = _colorManager.Update(color);
             if (result.Success) {
                 return Ok(result);
             }

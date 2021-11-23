@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase {
-        ICustomerService _customerManager;
+    public class BrandsController : ControllerBase {
+        IBrandService _brandService;
 
-        public CustomerController(ICustomerService customerManager) {
-            _customerManager = customerManager;
+        public BrandsController(IBrandService brandService) {
+            _brandService = brandService;
         }
 
         [HttpGet("get")]
-        public IActionResult GetAll(int id) {
-            var result = _customerManager.Get(id);
+        public IActionResult Get(int id) {
+            var result = _brandService.Get(id);
             if (result.Success) {
                 return Ok(result);
             }
@@ -28,7 +28,7 @@ namespace WebAPI.Controllers {
 
         [HttpGet("getall")]
         public IActionResult GetAll() {
-            var result = _customerManager.GetAll();
+            var result = _brandService.GetAll();
             if (result.Success) {
                 return Ok(result);
             }
@@ -36,8 +36,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Customer customer) {
-            var result = _customerManager.Add(customer);
+        public IActionResult Add(Brand brand) {
+            var result = _brandService.Add(brand);
             if (result.Success) {
                 return Ok(result);
             }
@@ -45,8 +45,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(Customer customer) {
-            var result = _customerManager.Delete(customer);
+        public IActionResult Delete(Brand brand) {
+            var result = _brandService.Delete(brand);
             if (result.Success) {
                 return Ok(result);
             }
@@ -54,8 +54,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("update")]
-        public IActionResult Update(Customer customer) {
-            var result = _customerManager.Update(customer);
+        public IActionResult Update(Brand brand) {
+            var result = _brandService.Update(brand);
             if (result.Success) {
                 return Ok(result);
             }

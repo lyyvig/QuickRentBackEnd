@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarController : ControllerBase {
+    public class CarsController : ControllerBase {
         ICarService _carManager;
 
-        public CarController(ICarService carManager) {
+        public CarsController(ICarService carManager) {
             _carManager = carManager;
         }
 
         [HttpGet("get")]
-        public IActionResult GetAll(int id) {
+        public IActionResult Get(int id) {
             var result = _carManager.Get(id);
             if (result.Success) {
                 return Ok(result);

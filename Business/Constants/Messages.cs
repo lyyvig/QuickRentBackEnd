@@ -16,6 +16,6 @@ namespace Business.Constants {
         public static string ItemDailyPriceInvalid = "!!!Daily price must he higher than 0";
         public static string UserNotExist = "!!!User doesn't exist";
         public static string CarAlreadyRented = "!!!Car is already rented";
-
+        public static string CarImageExceeded = "Car image count exceeded";
     }
 }

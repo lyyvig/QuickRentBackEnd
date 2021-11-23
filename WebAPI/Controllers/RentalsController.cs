@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase {
-        IUserService _userManager;
+    public class RentalsController : ControllerBase {
+        IRentalService _rentalManager;
 
-        public UserController(IUserService userManager) {
-            _userManager = userManager;
+        public RentalsController(IRentalService rentalManager) {
+            _rentalManager = rentalManager;
         }
 
         [HttpGet("get")]
-        public IActionResult GetAll(int id) {
-            var result = _userManager.Get(id);
+        public IActionResult Get(int id) {
+            var result = _rentalManager.Get(id);
             if (result.Success) {
                 return Ok(result);
             }
@@ -28,7 +28,7 @@ namespace WebAPI.Controllers {
 
         [HttpGet("getall")]
         public IActionResult GetAll() {
-            var result = _userManager.GetAll();
+            var result = _rentalManager.GetAll();
             if (result.Success) {
                 return Ok(result);
             }
@@ -36,8 +36,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("add")]
-        public IActionResult Add(User user) {
-            var result = _userManager.Add(user);
+        public IActionResult Add(Rental rental) {
+            var result = _rentalManager.Add(rental);
             if (result.Success) {
                 return Ok(result);
             }
@@ -45,8 +45,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(User user) {
-            var result = _userManager.Delete(user);
+        public IActionResult Delete(Rental rental) {
+            var result = _rentalManager.Delete(rental);
             if (result.Success) {
                 return Ok(result);
             }
@@ -54,8 +54,8 @@ namespace WebAPI.Controllers {
         }
 
         [HttpPost("update")]
-        public IActionResult Update(User user) {
-            var result = _userManager.Update(user);
+        public IActionResult Update(Rental rental) {
+            var result = _rentalManager.Update(rental);
             if (result.Success) {
                 return Ok(result);
             }
