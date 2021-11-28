@@ -1,4 +1,5 @@
 ﻿using Business.Concrete;
+using Core.Entities.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
@@ -38,7 +39,7 @@ namespace ConsoleUI {
         }
 
         private static void CustomerTest() {
-            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal(), new EfUserDal());
 
             Console.WriteLine("\n--------Customer-------");
             var result = customerManager.Add(new Customer { Id = 1, CompanyName = "Lyvig" });
@@ -56,11 +57,11 @@ namespace ConsoleUI {
 
 
             Console.WriteLine("\n--------USER-------");
-            var result = userManager.Add(new User { FirstName = "Baris", LastName = "Bilir", EMail = "baris.blirr@gmail.com", Password = "123456789" });
+            /*var result = userManager.Add(new User { FirstName = "Baris", LastName = "Bilir", Email = "baris.blirr@gmail.com", Password = "123456789" });
             Console.WriteLine(result.Message);
 
-            result = userManager.Add(new User { FirstName = "Mert", LastName = "Patlar", EMail = "abc@gmail.com", Password = "1234567890" });
-            Console.WriteLine(result.Message);
+            result = userManager.Add(new User { FirstName = "Mert", LastName = "Patlar", Email = "abc@gmail.com", Password = "1234567890" });
+            Console.WriteLine(result.Message);*/
         }
 
         private static void CarDetailDtoTest() {

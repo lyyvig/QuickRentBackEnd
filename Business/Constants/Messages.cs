@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,5 +18,12 @@ namespace Business.Constants {
         public static string UserNotExist = "!!!User doesn't exist";
         public static string CarAlreadyRented = "!!!Car is already rented";
         public static string CarImageExceeded = "Car image count exceeded";
+        public static string AuthorizationDenied = "Authorization denied";
+        public static string AccessTokenCreated = "Access token created";
+        public static string UserAlreadyExists = "User already exists";
+        public static string SuccessfulLogin = "Successful login";
+        public static string PasswordError = "Password error";
+        public static string UserNotFound = "User not found";
+        public static string UserRegistered = "User registered";
     }
 }

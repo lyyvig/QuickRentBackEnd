@@ -9,10 +9,5 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework {
     public class EfCustomerDal : EfEntityRepositoryBase<Customer, CarRentDbContext>, ICustomerDal {
-        public bool UserExist(int userId) {
-            using (CarRentDbContext context = new CarRentDbContext()) {
-                return context.Users.Any(u => u.Id == userId);
-            }
-        }
     }
 }

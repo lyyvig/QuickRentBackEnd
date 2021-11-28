@@ -1,5 +1,5 @@
 ﻿using Business.Abstract;
-using Entities.Concrete;
+using Core.Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,18 +17,9 @@ namespace WebAPI.Controllers {
             _userManager = userManager;
         }
 
-        [HttpGet("get")]
-        public IActionResult Get(int id) {
-            var result = _userManager.Get(id);
-            if (result.Success) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("getall")]
-        public IActionResult GetAll() {
-            var result = _userManager.GetAll();
+        [HttpGet("getclaims")]
+        public IActionResult GetClaims(User user) {
+            var result = _userManager.GetClaims(user);
             if (result.Success) {
                 return Ok(result);
             }
@@ -44,18 +35,9 @@ namespace WebAPI.Controllers {
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
-        public IActionResult Delete(User user) {
-            var result = _userManager.Delete(user);
-            if (result.Success) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpPost("update")]
-        public IActionResult Update(User user) {
-            var result = _userManager.Update(user);
+        [HttpGet("getbymail")]
+        public IActionResult GetByMail(User user) {
+            var result = _userManager.GetByMail(user.Email);
             if (result.Success) {
                 return Ok(result);
             }

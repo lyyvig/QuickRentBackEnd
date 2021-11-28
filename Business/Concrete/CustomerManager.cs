@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -13,13 +14,17 @@ using System.Threading.Tasks;
 namespace Business.Concrete {
     public class CustomerManager : ICustomerService {
         ICustomerDal _customerDal;
+        IUserDal _userDal;
 
-        public CustomerManager(ICustomerDal customerDal) {
+        public CustomerManager(ICustomerDal customerDal, IUserDal userDal) {
             _customerDal = customerDal;
+            _userDal = userDal;
         }
 
         public IResult Add(Customer customer) {
-            if (!_customerDal.UserExist(customer.Id)) return new ErrorResult(Messages.UserNotExist);
+            var result = BusinessRules.Run(UserExist(customer.Id));
+            if (result != null) return result;
+
             _customerDal.Add(customer);
             return new SuccessResult(Messages.ItemAdded + customer.Id);
         }
@@ -40,6 +45,11 @@ namespace Business.Concrete {
         public IResult Update(Customer customer) {
             _customerDal.Update(customer);
             return new SuccessResult(Messages.ItemUpdated + customer.Id);
+        }
+
+        private IResult UserExist(int id) {
+            if(_userDal.Get(u => u.Id == id) != null) return new SuccessResult();
+            return new ErrorResult(Messages.UserNotExist);
         }
     }
 }
