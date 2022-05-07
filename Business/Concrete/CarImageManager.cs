@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Transaction;
 using Core.Utilities.Business;
 using Core.Utilities.MicroServices.FileManager;
 using Core.Utilities.Results;
@@ -52,12 +54,14 @@ namespace Business.Concrete {
         public IDataResult<List<CarImage>> GetByCarId(int carId) {
             var images = _carImageDal.GetAll(ci => ci.CarId == carId);
             if (images.Count > 0) {
+                var s = System.IO.Directory.GetCurrentDirectory();
                 return new SuccessDataResult<List<CarImage>>();
             }
             images.Add(new CarImage { ImagePath = Paths.CarImagePath + "default.jpg" });
             return new ErrorDataResult<List<CarImage>>(images);
         }
 
+        [TransactionScopeAspect]
         public IResult Update(IFormFile formFile, CarImage carImage) {
             var image = _carImageDal.Get(ci => ci.Id == carImage.Id); // Finding image
             carImage.CarId = image.CarId; 
