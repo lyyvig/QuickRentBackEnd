@@ -17,9 +17,11 @@ using System.Threading.Tasks;
 namespace Business.Concrete {
     public class CarManager : ICarService {
         ICarDal _carDal;
-
-        public CarManager(ICarDal carDal) {
+        ICarImageService _carImageService;
+        public CarManager(ICarDal carDal, ICarImageService carImageService) {
             _carDal = carDal;
+            _carImageService = carImageService;
+
         }
 
         //[CacheRemoveAspect("ICarService.Get")]
@@ -32,6 +34,7 @@ namespace Business.Concrete {
 
         [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(Car car) {
+            _carImageService.DeleteByCarId(car.Id);
             _carDal.Delete(car);
             return new SuccessResult(Messages.ItemDeleted + car.Description);
         }

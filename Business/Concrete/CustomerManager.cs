@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Business;
@@ -42,6 +43,7 @@ namespace Business.Concrete {
             return new SuccessDataResult<Customer>(_customerDal.Get(u => u.Id == userId));
         }
 
+        [SecuredOperation("admin,customer.all,customer.getall")]
         [CacheAspect(10)]
         public IDataResult<List<Customer>> GetAll() {
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll());
@@ -55,7 +57,7 @@ namespace Business.Concrete {
 
         private IResult UserExist(int id) {
             if(_userDal.Get(u => u.Id == id) != null) return new SuccessResult();
-            return new ErrorResult(Messages.UserNotExist);
+            return new ErrorResult(Messages.UserNotExists);
         }
     }
 }

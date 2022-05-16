@@ -1,9 +1,11 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Transaction;
 using Core.Utilities.Business;
-using Core.Utilities.MicroServices.FileManager;
+using Core.Utilities.Helpers.FileHelper;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -23,30 +25,49 @@ namespace Business.Concrete {
             _carImageDal = carImageDal;
         }
 
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Add(IFormFile formFile, CarImage carImage) {
             var result = BusinessRules.Run(CheckIfImageCountOfCarExceeded(carImage.CarId));
             if(result != null) {
                 return result;
             }
 
-            string path = string.Format(@"{0}.jpg", Guid.NewGuid());
-            carImage.ImagePath = Paths.CarImagePath + path;
+            string imageName = string.Format(@"{0}.jpg", Guid.NewGuid());
+            carImage.ImagePath = Paths.CarImagePath + "\\" + imageName;
+            carImage.Date = DateTime.Now;
 
-            SetAndWriteImage(formFile, carImage, carImage.ImagePath);
+            FileHelper.Write(formFile, carImage.ImagePath);
+
+
             _carImageDal.Add(carImage);
             return new SuccessResult(Messages.ItemAdded + carImage.Id);
         }
 
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Delete(CarImage carImage) {
-            string path = _carImageDal.Get(ci => ci.Id == carImage.Id).ImagePath; //Getting given carImage's path
+            string path = _carImageDal.Get(ci => ci.Id == carImage.Id).ImagePath; 
 
-            File.Delete(path); 
+            FileHelper.Delete(path); 
             _carImageDal.Delete(carImage);
 
 
             return new SuccessResult(Messages.ItemDeleted + carImage.Id);
         }
 
+        [CacheRemoveAspect("ICarImageService.Get")]
+        public IResult DeleteByCarId(int carId) {
+            var result = GetByCarId(carId);
+            if (result.Success) {
+                foreach (var item in result.Data) {
+                    Delete(item);
+                }
+            }
+            return new SuccessResult();
+        }
+
+        [SecuredOperation("admin,carimage.all,carimage.getall")]
+        [CacheAspect(60)]
+        [PerformanceAspect(1)]
         public IDataResult<List<CarImage>> GetAll() {
             return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(), Messages.ItemsListed);
         }
@@ -54,23 +75,29 @@ namespace Business.Concrete {
         public IDataResult<List<CarImage>> GetByCarId(int carId) {
             var images = _carImageDal.GetAll(ci => ci.CarId == carId);
             if (images.Count > 0) {
-                var s = System.IO.Directory.GetCurrentDirectory();
-                return new SuccessDataResult<List<CarImage>>();
+                return new SuccessDataResult<List<CarImage>>(images);
             }
-            images.Add(new CarImage { ImagePath = Paths.CarImagePath + "default.jpg" });
+            images.Add(new CarImage { ImagePath = Paths.CarImagePath + "\\" + "default.jpg" });
             return new ErrorDataResult<List<CarImage>>(images);
         }
 
+        [CacheRemoveAspect("ICarImageService.Get")]
         [TransactionScopeAspect]
         public IResult Update(IFormFile formFile, CarImage carImage) {
-            var image = _carImageDal.Get(ci => ci.Id == carImage.Id); // Finding image
-            carImage.CarId = image.CarId; 
+            var imageToUpdate = _carImageDal.Get(ci => ci.Id == carImage.Id); // Finding image
+            if(imageToUpdate == null) {
+                return new ErrorResult(Messages.ImageNotFound);
+            }
+            carImage.CarId = imageToUpdate.CarId;
+            carImage.Date = DateTime.Now;
+            carImage.ImagePath = imageToUpdate.ImagePath;
 
-            SetAndWriteImage(formFile, carImage, image.ImagePath); // Overwriting file
             _carImageDal.Update(carImage);
+
+            FileHelper.Write(formFile, imageToUpdate.ImagePath); // Overwriting file
+
             return new SuccessResult(Messages.ItemUpdated + carImage.Id);
         }
-
 
 
 
@@ -81,11 +108,6 @@ namespace Business.Concrete {
             return new ErrorResult(Messages.CarImageExceeded);
         }
 
-        private void SetAndWriteImage(IFormFile formFile, CarImage carImage, string path) {
-            carImage.Date = DateTime.Now;
-            carImage.ImagePath = path;
-            FileManager.Create(formFile, carImage.ImagePath);
-        }
 
     }
 }

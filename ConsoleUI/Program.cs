@@ -4,10 +4,17 @@ using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using System;
+using System.IO;
 
 namespace ConsoleUI {
     class Program {
         static void Main(string[] args) {
+
+            Console.WriteLine(Directory.GetCurrentDirectory());
+
+            Console.WriteLine(Path.GetDirectoryName(@"wwwrootz\images\cars\9026680c-c979-4e23-be47-7889c379c5b9.jpg"));
+
+
             ColorTest();
 
             BrandTest();
@@ -65,7 +72,7 @@ namespace ConsoleUI {
         }
 
         private static void CarDetailDtoTest() {
-            CarManager carManager = new CarManager(new EfCarDal());
+            CarManager carManager = new CarManager(new EfCarDal(), new CarImageManager(new EfCarImageDal()));
 
             Console.WriteLine("\n--------CAR DETAIL-------");
             var result = carManager.GetCarDetails();
@@ -76,7 +83,7 @@ namespace ConsoleUI {
         }
 
         private static void CarTest() {
-            CarManager carManager = new CarManager(new EfCarDal());
+            CarManager carManager = new CarManager(new EfCarDal(), new CarImageManager(new EfCarImageDal()));
 
             carManager.Add(new Car { Description = "Mini Cooper", BrandId = 1, ColorId = 1, DailyPrice = 1000, ModelYear = 2009 });
             carManager.Add(new Car { Description = "Mini Cooper", BrandId = 1, ColorId = 2, DailyPrice = 2000, ModelYear = 2021 });

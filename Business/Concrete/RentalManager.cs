@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Results;
@@ -25,6 +26,7 @@ namespace Business.Concrete {
             return new SuccessResult(Messages.ItemAdded + rental.Id);
         }
 
+        [SecuredOperation("admin,rental.all,rental.delete")]
         [CacheRemoveAspect("IRentalService.Get")]
         public IResult Delete(Rental rental) {
             _rentalDal.Delete(rental);
@@ -36,6 +38,7 @@ namespace Business.Concrete {
             return new SuccessDataResult<Rental>(_rentalDal.Get(u => u.Id == userId));
         }
 
+        [SecuredOperation("admin,rental.all,rental.getall")]
         [CacheAspect(10)]
         public IDataResult<List<Rental>> GetAll() {
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll());

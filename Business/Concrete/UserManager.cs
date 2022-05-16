@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
@@ -33,7 +34,7 @@ namespace Business.Concrete {
             if (result != null) {
                 return new SuccessDataResult<User>(result);
             }
-            return new ErrorDataResult<User>();
+            return new ErrorDataResult<User>(Messages.UserNotExists);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Results;
@@ -18,12 +19,14 @@ namespace Business.Concrete {
             _brandDal = brandDal;
         }
 
+        [SecuredOperation("admin,brand.all,brand.add")]
         [CacheRemoveAspect("IBrandService.Get")]
         public IResult Add(Brand brand) {
             _brandDal.Add(brand);
             return new SuccessResult(Messages.ItemAdded + brand.Name);
         }
 
+        [SecuredOperation("admin,brand.all,brand.delete")]
         [CacheRemoveAspect("IBrandService.Get")]
         public IResult Delete(Brand brand) {
             _brandDal.Delete(brand);
@@ -40,6 +43,7 @@ namespace Business.Concrete {
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.ItemsListed);
         }
 
+        [SecuredOperation("admin,brand.all,brand.update")]
         [CacheRemoveAspect("IBrandService.Get")]
         public IResult Update(Brand brand) {
             _brandDal.Update(brand);

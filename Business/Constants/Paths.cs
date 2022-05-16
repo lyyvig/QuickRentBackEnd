@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Business.Constants {
     public static class Paths {
-        public static string CarImagePath = @"..\Images\Cars\";
+        public static readonly string CarImagePath = @"wwwroot\images\cars";
 
     }
 }

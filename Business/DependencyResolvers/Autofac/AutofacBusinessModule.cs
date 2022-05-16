@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 namespace Business.DependencyResolvers.Autofac {
      public class AutofacBusinessModule : Module {
         protected override void Load(ContainerBuilder builder) {
+
+            //dependency resolvers
             builder.RegisterType<BrandManager>().As<IBrandService>().SingleInstance();
             builder.RegisterType<EfBrandDal>().As<IBrandDal>().SingleInstance();
 
@@ -41,7 +43,7 @@ namespace Business.DependencyResolvers.Autofac {
             builder.RegisterType<JwtHelper>().As<ITokenHelper>().SingleInstance();
 
 
-
+            //enabling interceptors for aspects
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
