@@ -24,8 +24,7 @@ namespace Business.Concrete {
 
         }
 
-        //[CacheRemoveAspect("ICarService.Get")]
-        //[SecuredOperation("product.add")]
+        [CacheRemoveAspect("ICarService.Get")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car) {
             _carDal.Add(car);
@@ -43,12 +42,25 @@ namespace Business.Concrete {
             return new SuccessDataResult<Car>(_carDal.Get(c => c.Id == id), Messages.ItemListed);
         }
 
+        public IDataResult<CarDetailDto> GetCarDetail(int carId) {
+            return new SuccessDataResult<CarDetailDto>(_carDal.GetCarDetail(carId));
+        }
+
+
         public IDataResult<List<Car>> GetAll() {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.ItemsListed);
         }
 
-        public IDataResult<List<CarDetailDto>> GetCarDetails() {
+        public IDataResult<List<CarDetailDto>> GetDetails() {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(), Messages.DetailedItemsListed);
+        }
+
+        public IDataResult<List<CarDetailDto>> GetDetailsByBrandId(int brandId) {
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(cd => cd.BrandId == brandId), Messages.DetailedItemsListed);
+        }
+
+        public IDataResult<List<CarDetailDto>> GetDetailsByColorId(int colorId) {
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(cd => cd.ColorId == colorId), Messages.DetailedItemsListed);
         }
 
         [CacheAspect(10)]

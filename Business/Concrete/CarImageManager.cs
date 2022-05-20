@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 namespace Business.Concrete {
     public class CarImageManager : ICarImageService {
         ICarImageDal _carImageDal;
+        
 
         public CarImageManager(ICarImageDal carImageDal) {
             _carImageDal = carImageDal;
@@ -33,10 +34,10 @@ namespace Business.Concrete {
             }
 
             string imageName = string.Format(@"{0}.jpg", Guid.NewGuid());
-            carImage.ImagePath = Paths.CarImagePath + "\\" + imageName;
+            carImage.ImagePath = Paths.CarImagePath + imageName;
             carImage.Date = DateTime.Now;
 
-            FileHelper.Write(formFile, carImage.ImagePath);
+            FileHelper.Write(formFile, Paths.RootPath + carImage.ImagePath);
 
 
             _carImageDal.Add(carImage);
@@ -47,8 +48,8 @@ namespace Business.Concrete {
         public IResult Delete(CarImage carImage) {
             string path = _carImageDal.Get(ci => ci.Id == carImage.Id).ImagePath; 
 
-            FileHelper.Delete(path); 
             _carImageDal.Delete(carImage);
+            FileHelper.Delete(Paths.RootPath + path); 
 
 
             return new SuccessResult(Messages.ItemDeleted + carImage.Id);
@@ -77,7 +78,7 @@ namespace Business.Concrete {
             if (images.Count > 0) {
                 return new SuccessDataResult<List<CarImage>>(images);
             }
-            images.Add(new CarImage { ImagePath = Paths.CarImagePath + "\\" + "default.jpg" });
+            images.Add(new CarImage { ImagePath = Paths.CarImagePath + "default.jpg" });
             return new ErrorDataResult<List<CarImage>>(images);
         }
 
@@ -94,7 +95,7 @@ namespace Business.Concrete {
 
             _carImageDal.Update(carImage);
 
-            FileHelper.Write(formFile, imageToUpdate.ImagePath); // Overwriting file
+            FileHelper.Write(formFile, Paths.RootPath + imageToUpdate.ImagePath); // Overwriting file
 
             return new SuccessResult(Messages.ItemUpdated + carImage.Id);
         }
