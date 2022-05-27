@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -44,9 +45,18 @@ namespace WebAPI.Controllers {
             return BadRequest(result);
         }
 
+        [HttpPost("checkifintervalempty")]
+        public IActionResult CheckIfIntervalEmpty(Rental rentalRequest) {
+            var result = _rentalManager.CheckIfCarAlreadyRented(rentalRequest);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpPost("add")]
-        public IActionResult Add(Rental rental) {
-            var result = _rentalManager.Add(rental);
+        public IActionResult Add(RentCarDto rentCarDto) {
+            var result = _rentalManager.Add(rentCarDto.Rental, rentCarDto.CreditCard);
             if (result.Success) {
                 return Ok(result);
             }

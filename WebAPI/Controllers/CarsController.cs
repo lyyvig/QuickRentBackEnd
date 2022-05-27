@@ -62,6 +62,15 @@ namespace WebAPI.Controllers {
             return BadRequest(result);
         }
 
+        [HttpPost("getdetailsbyfilter")]
+        public IActionResult GetDetailsByFilter(FilterOptions filter) {
+            var result = _carManager.GetDetailsByFilter(filter);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getdetailsbycolorid")]
         public IActionResult GetDetailsByColorId(int colorId) {
             var result = _carManager.GetDetailsByColorId(colorId);

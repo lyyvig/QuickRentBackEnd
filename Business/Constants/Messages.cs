@@ -24,11 +24,14 @@ namespace Business.Constants {
         public static readonly string AuthorizationDenied = "Authorization denied";
         public static readonly string AccessTokenCreated = "Access token created";
         
-        public static readonly string CarAlreadyRented = "!!!Car is already rented";
+        public static readonly string CarAlreadyRented = "Car is already rented in given interval";
         public static readonly string CarImageExceeded = "Car image count exceeded";
+        public static readonly string OrderConfirmed = "Order is confirmed";
 
 
         public static readonly string ImageNotFound = "Image Not Found";
+
+        public static readonly string InsufficientBalance = "Balance is insufficient ";
 
     }
 

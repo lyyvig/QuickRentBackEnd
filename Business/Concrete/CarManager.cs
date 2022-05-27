@@ -55,6 +55,18 @@ namespace Business.Concrete {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(), Messages.DetailedItemsListed);
         }
 
+        public IDataResult<List<CarDetailDto>> GetDetailsByFilter(FilterOptions filter) {
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails( car =>
+                    (filter.BrandId == 0 || filter.BrandId == car.BrandId) &&
+                    (filter.ColorId == 0 || filter.ColorId == car.ColorId) &&
+                    (filter.MinModelYear == 0 || filter.MinModelYear <= car.ModelYear) &&
+                    (filter.MinPrice == 0 || filter.MinPrice <= car.DailyPrice) &&
+                    (filter.MaxPrice == 0 || filter.MaxPrice >= car.DailyPrice)
+
+
+                ), Messages.DetailedItemsListed);
+        }
+
         public IDataResult<List<CarDetailDto>> GetDetailsByBrandId(int brandId) {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(cd => cd.BrandId == brandId), Messages.DetailedItemsListed);
         }

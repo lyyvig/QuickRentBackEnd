@@ -32,17 +32,17 @@ namespace ConsoleUI {
         }
 
         private static void RentalTest() {
-            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            //RentalManager rentalManager = new RentalManager(new EfRentalDal());
 
-            Console.WriteLine("\n--------Rental-------");
-            var result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 1, RentDate = new DateTime(2021, 11, 19), ReturnDate = new DateTime(2021, 11, 20) });
-            Console.WriteLine(result.Message);
+            //Console.WriteLine("\n--------Rental-------");
+            //var result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 1, RentDate = new DateTime(2021, 11, 19), ReturnDate = new DateTime(2021, 11, 20) });
+            //Console.WriteLine(result.Message);
 
-            result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 2, RentDate = new DateTime(2021, 11, 20) });
-            Console.WriteLine(result.Message);
+            //result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 2, RentDate = new DateTime(2021, 11, 20) });
+            //Console.WriteLine(result.Message);
 
-            result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 1, RentDate = new DateTime(2021, 11, 20) });
-            Console.WriteLine(result.Message);
+            //result = rentalManager.Add(new Rental { CarId = 3, CustomerId = 1, RentDate = new DateTime(2021, 11, 20) });
+            //Console.WriteLine(result.Message);
         }
 
         private static void CustomerTest() {

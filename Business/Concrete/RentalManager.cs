@@ -16,20 +16,27 @@ using System.Threading.Tasks;
 namespace Business.Concrete {
     public class RentalManager : IRentalService {
         IRentalDal _rentalDal;
-
-        public RentalManager(IRentalDal rentalDal) {
+        ICarService _carService;
+        IPaymentService _paymentService;
+        public RentalManager(IRentalDal rentalDal, IPaymentService paymentService, ICarService carService) {
             _rentalDal = rentalDal;
+            _paymentService = paymentService;
+            _carService = carService;
         }
 
         [CacheRemoveAspect("IRentalService.Get")]
-        public IResult Add(Rental rental) {
-            var businessResult = BusinessRules.Run(CheckIfCarAlreadyRented(rental.CarId));
-            if(businessResult != null) {
+        public IResult Add(Rental rental, CreditCard card) {
+            var businessResult = BusinessRules.Run(CheckIfCarRented(rental));
+            if (businessResult != null) {
                 return businessResult;
             }
+            TimeSpan ts = rental.ReturnDate - rental.RentDate;
+            int amount = ((int)ts.TotalDays + 1) * _carService.Get(rental.CarId).Data.DailyPrice;
 
-            rental.RentDate = DateTime.Now;
-            rental.ReturnDate = null;
+            var paymentResult = _paymentService.Pay(card, amount);
+            if (!paymentResult.Success) {
+                return paymentResult;
+            }
 
             _rentalDal.Add(rental);
             return new SuccessResult(Messages.ItemAdded + rental.Id);
@@ -58,21 +65,26 @@ namespace Business.Concrete {
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails());
         }
 
-        public IResult ReturnCar(Rental rental) {
-            var rentalToUpdate = _rentalDal.Get(r => r.Id == rental.Id);
-            rentalToUpdate.ReturnDate = DateTime.Now;
-            return Update(rentalToUpdate);
-        }
-
         [CacheRemoveAspect("IRentalService.Get")]
         public IResult Update(Rental rental) {
             _rentalDal.Update(rental);
             return new SuccessResult(Messages.ItemUpdated + rental.Id);
         }
 
-        private IResult CheckIfCarAlreadyRented(int carId) {
-            var result = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate == null).Any();
-            if (result) {
+        public IDataResult<bool> CheckIfCarAlreadyRented(Rental rentalRequest) {
+            var isOccupied = CheckIfCarRented(rentalRequest);
+            if (isOccupied.Success) {
+                return new SuccessDataResult<bool>(true);
+            }
+            return new SuccessDataResult<bool>(false);
+        }
+
+        private IResult CheckIfCarRented(Rental rental) {
+            var isOccupied = _rentalDal.GetAll(r => r.CarId == rental.CarId &&
+                r.ReturnDate >= rental.RentDate && //Finds the rentals which are not yet returned
+                r.RentDate <= rental.ReturnDate // Finds the rentals which are rented before requests return date. Which means it occupies requests rent interval
+            ).Any();
+            if (isOccupied) {
                 return new ErrorResult();
             }
             return new SuccessResult();
