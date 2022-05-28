@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Castle.DynamicProxy;
 using Core.Extensions;
 using Business.Constants;
+using Core.Utilities.Exceptions;
 
 namespace Business.BusinessAspects.Autofac {
     public class SecuredOperation : MethodInterception {
@@ -28,7 +29,7 @@ namespace Business.BusinessAspects.Autofac {
                     return;
                 }
             }
-            throw new Exception(Messages.AuthorizationDenied);
+            throw new AuthorizationException(Messages.AuthorizationDenied);
         }
     }
 }

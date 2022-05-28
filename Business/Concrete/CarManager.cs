@@ -86,6 +86,7 @@ namespace Business.Concrete {
         }
 
         [CacheRemoveAspect("ICarService.Get")]
+        [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car) {
             _carDal.Update(car);
             return new SuccessResult(Messages.ItemUpdated + car.Description);

@@ -106,7 +106,7 @@ namespace Business.Concrete {
             if (_carImageDal.GetAll(ci => ci.CarId == carId).Count < 5) {
                 return new SuccessResult();
             }
-            return new ErrorResult(Messages.CarImageExceeded);
+            return new ErrorResult(Messages.CarImageCountExceeded);
         }
 
 
