@@ -28,7 +28,7 @@ namespace Business.Concrete {
 
         [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Add(IFormFile formFile, CarImage carImage) {
-            var result = BusinessRules.Run(CheckIfImageCountOfCarExceeded(carImage.CarId));
+            var result = BusinessRules.Run(CheckIfImageCountOfCarExceeded(carImage.CarId, 1));
             if(result != null) {
                 return result;
             }
@@ -42,6 +42,24 @@ namespace Business.Concrete {
 
             _carImageDal.Add(carImage);
             return new SuccessResult(Messages.ItemAdded + carImage.Id);
+        }
+
+        public IResult AddMultiple(IFormFile[] files, CarImage carImage) {
+            var result = BusinessRules.Run(CheckIfImageCountOfCarExceeded(carImage.CarId, files.Length));
+            if (result != null) {
+                return result;
+            }
+            foreach (var file in files) {
+                string imageName = string.Format(@"{0}.jpg", Guid.NewGuid());
+                carImage.ImagePath = Paths.CarImagePath + imageName;
+                carImage.Date = DateTime.Now;
+                carImage.Id = 0;
+
+                FileHelper.Write(file, Paths.RootPath + carImage.ImagePath);
+
+                _carImageDal.Add(carImage);
+            }
+            return new SuccessResult(Messages.ItemAdded);
         }
 
         [CacheRemoveAspect("ICarImageService.Get")]
@@ -102,8 +120,8 @@ namespace Business.Concrete {
 
 
 
-        private IResult CheckIfImageCountOfCarExceeded(int carId) {
-            if (_carImageDal.GetAll(ci => ci.CarId == carId).Count < 5) {
+        private IResult CheckIfImageCountOfCarExceeded(int carId, int imagesToAdd) {
+            if (_carImageDal.GetAll(ci => ci.CarId == carId).Count + imagesToAdd <= 5) {
                 return new SuccessResult();
             }
             return new ErrorResult(Messages.CarImageCountExceeded);

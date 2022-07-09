@@ -18,6 +18,7 @@ namespace Business.Concrete {
         }
 
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto) {
+            //TODO add claims to user on register
 
             var result = BusinessRules.Run(CheckIfUserNotExists(userForRegisterDto.Email));
             if(result != null) {
@@ -48,7 +49,7 @@ namespace Business.Concrete {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
 
             if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.Data.PasswordHash, userToCheck.Data.PasswordSalt)) {
-                return new ErrorDataResult<User>(Messages.PasswordError);
+                return new ErrorDataResult<User>(Messages.WrongPasswordOrEmail);
             }
 
             return new SuccessDataResult<User>(userToCheck.Data, Messages.SuccessfulLogin);
@@ -64,7 +65,7 @@ namespace Business.Concrete {
             if (_userService.GetByMail(email).Success) {
                 return new SuccessResult();
             }
-            return new ErrorResult(Messages.UserNotExists);
+            return new ErrorResult(Messages.WrongPasswordOrEmail);
         }
 
         private IResult CheckIfUserNotExists(string email) {

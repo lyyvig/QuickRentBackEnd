@@ -14,7 +14,7 @@ namespace Business.Concrete {
             //simulating
             var balance = new Random().Next(500, 5000);
             if(balance < amount) {
-                return new ErrorResult(Messages.InsufficientBalance);
+                return new ErrorResult(Messages.BalanceInsufficent);
             }
             balance -= amount;
             return new SuccessResult(Messages.OrderConfirmed);

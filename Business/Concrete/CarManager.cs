@@ -26,9 +26,15 @@ namespace Business.Concrete {
 
         [CacheRemoveAspect("ICarService.Get")]
         [ValidationAspect(typeof(CarValidator))]
-        public IResult Add(Car car) {
+        public IDataResult<int> Add(Car car) {
             _carDal.Add(car);
-            return new SuccessResult(Messages.ItemAdded + car.Description);
+            car = _carDal.Get(c =>
+                c.BrandId == car.BrandId &&
+                c.ColorId == car.ColorId &&
+                c.Model == car.Model &&
+                c.ModelYear == car.ModelYear
+            );
+            return new SuccessDataResult<int>(car.Id);
         }
 
         [CacheRemoveAspect("ICarService.Get")]
@@ -57,11 +63,11 @@ namespace Business.Concrete {
 
         public IDataResult<List<CarDetailDto>> GetDetailsByFilter(FilterOptions filter) {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails( car =>
-                    (filter.BrandId == 0 || filter.BrandId == car.BrandId) &&
-                    (filter.ColorId == 0 || filter.ColorId == car.ColorId) &&
-                    (filter.MinModelYear == 0 || filter.MinModelYear <= car.ModelYear) &&
-                    (filter.MinPrice == 0 || filter.MinPrice <= car.DailyPrice) &&
-                    (filter.MaxPrice == 0 || filter.MaxPrice >= car.DailyPrice)
+                    (filter.BrandId == null || filter.BrandId == car.BrandId) &&
+                    (filter.ColorId == null || filter.ColorId == car.ColorId) &&
+                    (filter.MinModelYear == null || filter.MinModelYear <= car.ModelYear) &&
+                    (filter.MinPrice == null || filter.MinPrice <= car.DailyPrice) &&
+                    (filter.MaxPrice == null || filter.MaxPrice >= car.DailyPrice)
 
 
                 ), Messages.DetailedItemsListed);
@@ -90,6 +96,10 @@ namespace Business.Concrete {
         public IResult Update(Car car) {
             _carDal.Update(car);
             return new SuccessResult(Messages.ItemUpdated + car.Description);
+        }
+
+        public IDataResult<CarStatsDto> GetCarStats(int id) {
+            return new SuccessDataResult<CarStatsDto>(_carDal.GetCarStats(id));
         }
     }
 }

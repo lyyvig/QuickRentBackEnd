@@ -45,14 +45,15 @@ namespace WebAPI.Controllers {
             return BadRequest(result);
         }
 
-        [HttpPost("checkifintervalempty")]
-        public IActionResult CheckIfIntervalEmpty(Rental rentalRequest) {
-            var result = _rentalManager.CheckIfCarAlreadyRented(rentalRequest);
+        [HttpGet("getoccupieddates")]
+        public IActionResult GetEmptyDates(int carId) {
+            var result = _rentalManager.GetOccupiedDates(carId);
             if (result.Success) {
                 return Ok(result);
             }
             return BadRequest(result);
         }
+
 
         [HttpPost("add")]
         public IActionResult Add(RentCarDto rentCarDto) {

@@ -28,6 +28,7 @@ namespace DataAccess.Concrete.EntityFramework {
                                  Description = car.Description,
                                  DailyPrice = car.DailyPrice,
                                  ModelYear = car.ModelYear,
+                                 Model = car.Model,
                                  Images = context.CarImages.Where(ci => ci.CarId == car.Id).ToList()
                              };
                 var carDetail = result.First();
@@ -54,6 +55,7 @@ namespace DataAccess.Concrete.EntityFramework {
                                  Description = car.Description,
                                  DailyPrice = car.DailyPrice,
                                  ModelYear = car.ModelYear,
+                                 Model = car.Model,
                                  Images = context.CarImages.Count(ci => ci.CarId == car.Id) != 0
                                  ? context.CarImages.Where(ci => ci.CarId == car.Id).ToList()
                                  : new List<CarImage> { new CarImage {
@@ -65,6 +67,23 @@ namespace DataAccess.Concrete.EntityFramework {
                 return filter == null
                     ? result.ToList()
                     : result.Where(filter).ToList();
+            }
+        }
+        
+        public CarStatsDto GetCarStats(int id) {
+            using (CarRentDbContext context = new CarRentDbContext()) {
+                int totalIncome = 0;
+                var result = from ren in context.Rentals
+                             where ren.CarId == id
+                             select ren;
+                foreach (var ren in result) {
+                    totalIncome += ren.TotalPrice;
+                }
+                return new CarStatsDto {
+                    Id = id,
+                    TotalIncome = totalIncome,
+                    TotalRentals = result.Count()
+                };
             }
         }
     }

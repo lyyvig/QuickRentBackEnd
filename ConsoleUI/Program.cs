@@ -60,7 +60,7 @@ namespace ConsoleUI {
         }
 
         private static void UserTest() {
-            UserManager userManager = new UserManager(new EfUserDal());
+            //UserManager userManager = new UserManager(new EfUserDal());
 
 
             Console.WriteLine("\n--------USER-------");

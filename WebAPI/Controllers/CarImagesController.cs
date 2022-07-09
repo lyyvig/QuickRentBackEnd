@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,8 +24,8 @@ namespace WebAPI.Controllers {
             return Ok(_carImageManager.GetAll());
         }
 
-        [HttpGet("listbycarid")]
-        public IActionResult ListByCarId(int carId) {
+        [HttpGet("getbycarid")]
+        public IActionResult GetByCarId(int carId) {
             var images = _carImageManager.GetByCarId(carId);
             if (images.Success) {
                 return Ok(images);
@@ -33,12 +35,24 @@ namespace WebAPI.Controllers {
 
 
         [HttpPost("add")]
-        public IActionResult Add(IFormFile file, [FromForm] CarImage carImage) {
-            var result = _carImageManager.Add(file, carImage);
+        public IActionResult Add([FromForm] IFormFile image, int carId) {
+            var result = _carImageManager.Add(image, new CarImage { CarId = carId });
             if (result.Success) {
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        
+        [HttpPost("addmultiple")]
+        public IActionResult AddMultiple([FromForm] IFormFile[] images, [FromForm] int carId) {
+            var result = _carImageManager.AddMultiple(images, new CarImage { CarId = carId });
+            
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+
         }
 
         [HttpPost("update")]

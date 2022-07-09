@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Utilities.Security.JWT;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +14,6 @@ namespace WebAPI.Controllers {
     [ApiController]
     public class UsersController : ControllerBase {
         IUserService _userManager;
-
         public UsersController(IUserService userManager) {
             _userManager = userManager;
         }
@@ -35,9 +36,45 @@ namespace WebAPI.Controllers {
             return BadRequest(result);
         }
 
+        [HttpPost("changepassword")]
+        public IActionResult ChangePassword(ChangePasswordDto user) {
+            var result = _userManager.ChangePassword(user);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("update")]
+        public IActionResult Update(UserDto user) {
+            var result = _userManager.Update(user);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("get")]
+        public IActionResult Get(int id) {
+            var result = _userManager.GetUser(id);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getusers")]
+        public IActionResult GetUsers() {
+            var result = _userManager.GetUsers();
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getbymail")]
-        public IActionResult GetByMail(User user) {
-            var result = _userManager.GetByMail(user.Email);
+        public IActionResult GetByMail(string email) {
+            var result = _userManager.GetByMail(email);
             if (result.Success) {
                 return Ok(result);
             }

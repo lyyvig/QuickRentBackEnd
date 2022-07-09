@@ -52,7 +52,7 @@ namespace Business.Concrete {
         [CacheRemoveAspect("ICustomerService.Get")]
         public IResult Update(Customer customer) {
             _customerDal.Update(customer);
-            return new SuccessResult(Messages.ItemUpdated + customer.Id);
+            return new SuccessResult(Messages.InformationUpdated);
         }
 
         private IResult UserExist(int id) {

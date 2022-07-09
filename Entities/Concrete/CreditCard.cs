@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete {
     public class CreditCard {
+        public string CardHolderName { get; set; }
         public string CardNumber { get; set; }
         public string ExpireMonth { get; set; }
         public string ExpireYear { get; set; }

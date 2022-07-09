@@ -23,7 +23,7 @@ namespace Business.Concrete {
             _colorDal = colorDal;
         }
 
-        //[SecuredOperation("admin,color.all,color.add")]
+        [SecuredOperation("admin,color.all,color.add")]
         [CacheRemoveAspect("IColorService.Get")]
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color) {
