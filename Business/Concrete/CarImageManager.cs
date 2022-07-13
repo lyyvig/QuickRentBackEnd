@@ -27,6 +27,7 @@ namespace Business.Concrete {
         }
 
         [CacheRemoveAspect("ICarImageService.Get")]
+        [SecuredOperation("admin")]
         public IResult Add(IFormFile formFile, CarImage carImage) {
             var result = BusinessRules.Run(CheckIfImageCountOfCarExceeded(carImage.CarId, 1));
             if(result != null) {
@@ -41,9 +42,10 @@ namespace Business.Concrete {
 
 
             _carImageDal.Add(carImage);
-            return new SuccessResult(Messages.ItemAdded + carImage.Id);
+            return new SuccessResult(Messages.ImageAdded);
         }
 
+        [SecuredOperation("admin")]
         public IResult AddMultiple(IFormFile[] files, CarImage carImage) {
             var result = BusinessRules.Run(CheckIfImageCountOfCarExceeded(carImage.CarId, files.Length));
             if (result != null) {
@@ -59,10 +61,11 @@ namespace Business.Concrete {
 
                 _carImageDal.Add(carImage);
             }
-            return new SuccessResult(Messages.ItemAdded);
+            return new SuccessResult(Messages.ImagesAdded);
         }
 
         [CacheRemoveAspect("ICarImageService.Get")]
+        [SecuredOperation("admin")]
         public IResult Delete(CarImage carImage) {
             string path = _carImageDal.Get(ci => ci.Id == carImage.Id).ImagePath; 
 
@@ -70,10 +73,11 @@ namespace Business.Concrete {
             FileHelper.Delete(Paths.RootPath + path); 
 
 
-            return new SuccessResult(Messages.ItemDeleted + carImage.Id);
+            return new SuccessResult(Messages.ImageDeleted);
         }
 
         [CacheRemoveAspect("ICarImageService.Get")]
+        [SecuredOperation("admin")]
         public IResult DeleteByCarId(int carId) {
             var result = GetByCarId(carId);
             if (result.Success) {
@@ -84,24 +88,20 @@ namespace Business.Concrete {
             return new SuccessResult();
         }
 
-        [SecuredOperation("admin,carimage.all,carimage.getall")]
         [CacheAspect(60)]
         [PerformanceAspect(1)]
         public IDataResult<List<CarImage>> GetAll() {
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(), Messages.ItemsListed);
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
         }
 
         public IDataResult<List<CarImage>> GetByCarId(int carId) {
             var images = _carImageDal.GetAll(ci => ci.CarId == carId);
-            if (images.Count > 0) {
-                return new SuccessDataResult<List<CarImage>>(images);
-            }
-            images.Add(new CarImage { ImagePath = Paths.CarImagePath + "default.jpg" });
-            return new ErrorDataResult<List<CarImage>>(images);
+            return new SuccessDataResult<List<CarImage>>(images);
         }
 
         [CacheRemoveAspect("ICarImageService.Get")]
         [TransactionScopeAspect]
+        [SecuredOperation("admin")]
         public IResult Update(IFormFile formFile, CarImage carImage) {
             var imageToUpdate = _carImageDal.Get(ci => ci.Id == carImage.Id); // Finding image
             if(imageToUpdate == null) {
@@ -115,10 +115,8 @@ namespace Business.Concrete {
 
             FileHelper.Write(formFile, Paths.RootPath + imageToUpdate.ImagePath); // Overwriting file
 
-            return new SuccessResult(Messages.ItemUpdated + carImage.Id);
+            return new SuccessResult();
         }
-
-
 
         private IResult CheckIfImageCountOfCarExceeded(int carId, int imagesToAdd) {
             if (_carImageDal.GetAll(ci => ci.CarId == carId).Count + imagesToAdd <= 5) {

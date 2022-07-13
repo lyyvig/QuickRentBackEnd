@@ -29,13 +29,13 @@ namespace Business.Concrete {
             if (result != null) return result;
 
             _customerDal.Add(customer);
-            return new SuccessResult(Messages.ItemAdded + customer.Id);
+            return new SuccessResult(Messages.CustomerAdded);
         }
 
         [CacheRemoveAspect("ICustomerService.Get")]
         public IResult Delete(Customer customer) {
             _customerDal.Delete(customer);
-            return new SuccessResult(Messages.ItemDeleted + customer.Id);
+            return new SuccessResult(Messages.CustomerDeleted);
         }
 
         [CacheAspect(10)]
@@ -43,7 +43,7 @@ namespace Business.Concrete {
             return new SuccessDataResult<Customer>(_customerDal.Get(u => u.Id == userId));
         }
 
-        //[SecuredOperation("admin,customer.all,customer.getall")]
+        [SecuredOperation("admin")]
         [CacheAspect(10)]
         public IDataResult<List<Customer>> GetAll() {
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll());
@@ -57,7 +57,7 @@ namespace Business.Concrete {
 
         private IResult UserExist(int id) {
             if(_userDal.Get(u => u.Id == id) != null) return new SuccessResult();
-            return new ErrorResult(Messages.UserNotExists);
+            return new ErrorResult(Messages.UserDoesntExists);
         }
     }
 }

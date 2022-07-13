@@ -20,7 +20,7 @@ namespace Business.Concrete {
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto) {
             //TODO add claims to user on register
 
-            var result = BusinessRules.Run(CheckIfUserNotExists(userForRegisterDto.Email));
+            var result = BusinessRules.Run(CheckIfUserAlreadyExists(userForRegisterDto.Email));
             if(result != null) {
                 return new ErrorDataResult<User>(result.Message);
             }
@@ -56,7 +56,7 @@ namespace Business.Concrete {
         }
 
         public IDataResult<AccessToken> CreateAccessToken(User user) {
-            var claims = _userService.GetClaims(user).Data;
+            var claims = _userService.GetUserClaims(user.Id).Data;
             var accessToken = _tokenHelper.CreateToken(user, claims);
             return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
         }
@@ -68,7 +68,7 @@ namespace Business.Concrete {
             return new ErrorResult(Messages.WrongPasswordOrEmail);
         }
 
-        private IResult CheckIfUserNotExists(string email) {
+        private IResult CheckIfUserAlreadyExists(string email) {
             if (_userService.GetByMail(email).Success) {
                 return new ErrorResult(Messages.UserAlreadyExists);
             }

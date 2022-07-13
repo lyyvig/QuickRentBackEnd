@@ -47,14 +47,14 @@ namespace Business.Concrete {
             }
 
             _rentalDal.Add(rental);
-            return new SuccessResult(Messages.ItemAdded + rental.Id);
+            return new SuccessResult(Messages.CarRented);
         }
 
-        [SecuredOperation("admin,rental.all,rental.delete")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IRentalService.Get")]
         public IResult Delete(Rental rental) {
             _rentalDal.Delete(rental);
-            return new SuccessResult(Messages.ItemDeleted + rental.Id);
+            return new SuccessResult();
         }
 
         [CacheAspect(10)]
@@ -62,7 +62,7 @@ namespace Business.Concrete {
             return new SuccessDataResult<Rental>(_rentalDal.Get(u => u.Id == userId));
         }
 
-        [SecuredOperation("admin,rental.all,rental.getall")]
+        [SecuredOperation("admin")]
         [CacheAspect(10)]
         public IDataResult<List<Rental>> GetAll() {
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll());
@@ -93,22 +93,16 @@ namespace Business.Concrete {
         }
 
         [CacheAspect(10)]
+        [SecuredOperation("admin")]
         public IDataResult<List<RentalDetailDto>> GetDetails() {
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails().OrderByDescending(r => r.RentDate).ToList());
         }
 
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IRentalService.Get")]
         public IResult Update(Rental rental) {
             _rentalDal.Update(rental);
-            return new SuccessResult(Messages.ItemUpdated + rental.Id);
-        }
-
-        public IDataResult<bool> CheckIfCarAlreadyRented(Rental rentalRequest) {
-            var isOccupied = CheckIfCarRented(rentalRequest);
-            if (isOccupied.Success) {
-                return new SuccessDataResult<bool>(true);
-            }
-            return new SuccessDataResult<bool>(false);
+            return new SuccessResult();
         }
 
         private IResult CheckIfReturnDateGreaterThanRentDate(Rental rental) {

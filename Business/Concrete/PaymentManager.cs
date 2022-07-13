@@ -17,7 +17,7 @@ namespace Business.Concrete {
                 return new ErrorResult(Messages.BalanceInsufficent);
             }
             balance -= amount;
-            return new SuccessResult(Messages.OrderConfirmed);
+            return new SuccessResult();
         }
     }
 }

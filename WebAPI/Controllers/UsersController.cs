@@ -18,9 +18,36 @@ namespace WebAPI.Controllers {
             _userManager = userManager;
         }
 
-        [HttpGet("getclaims")]
-        public IActionResult GetClaims(User user) {
-            var result = _userManager.GetClaims(user);
+        [HttpGet("getuserclaims")]
+        public IActionResult GetUserClaims(int userId) {
+            var result = _userManager.GetUserClaims(userId);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getoperationclaims")]
+        public IActionResult GetOperationClaims() {
+            var result = _userManager.GetOperationClaims();
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("addclaim")]
+        public IActionResult AddClaim(UserOperationClaim operationClaim) {
+            var result = _userManager.AddClaim(operationClaim);
+            if (result.Success) {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("deleteclaim")]
+        public IActionResult DeleteClaim(UserOperationClaim operationClaim) {
+            var result = _userManager.DeleteClaim(operationClaim);
             if (result.Success) {
                 return Ok(result);
             }

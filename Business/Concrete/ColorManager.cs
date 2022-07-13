@@ -23,7 +23,7 @@ namespace Business.Concrete {
             _colorDal = colorDal;
         }
 
-        [SecuredOperation("admin,color.all,color.add")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IColorService.Get")]
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color) {
@@ -32,14 +32,14 @@ namespace Business.Concrete {
                 return businessResult;
             
             _colorDal.Add(color);
-            return new SuccessResult();
+            return new SuccessResult(Messages.ColorAdded);
         }
 
-        [SecuredOperation("admin,color.all,color.delete")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IColorService.Get")]
         public IResult Delete(Color color) {
             _colorDal.Delete(color);
-            return new SuccessResult();
+            return new SuccessResult(Messages.ColorDeleted);
         }
 
         [CacheAspect(10)]
@@ -52,12 +52,12 @@ namespace Business.Concrete {
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll());
         }
 
-        //[SecuredOperation("admin,color.all,color.update")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IColorService.Get")]
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Update(Color color) {
             _colorDal.Update(color);
-            return new SuccessResult();
+            return new SuccessResult(Messages.ColorUpdated);
         }
 
         private IResult CheckIfColorExists(Color color) {

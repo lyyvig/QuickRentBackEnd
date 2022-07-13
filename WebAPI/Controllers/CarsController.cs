@@ -26,27 +26,9 @@ namespace WebAPI.Controllers {
             return BadRequest(result);
         }
 
-        [HttpGet("getbybrandid")]
-        public IActionResult GetByBrandId(int id) {
-            var result = _carManager.GetCarsByBrandId(id);
-            if (result.Success) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
         [HttpGet("getcarstats")]
         public IActionResult GetCarStats(int id) {
             var result = _carManager.GetCarStats(id);
-            if (result.Success) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("getbycolorid")]
-        public IActionResult GetByColorId(int id) {
-            var result = _carManager.GetCarsByColorId(id);
             if (result.Success) {
                 return Ok(result);
             }
@@ -74,24 +56,6 @@ namespace WebAPI.Controllers {
         [HttpPost("getdetailsbyfilter")]
         public IActionResult GetDetailsByFilter(FilterOptions filter) {
             var result = _carManager.GetDetailsByFilter(filter);
-            if (result.Success) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("getdetailsbycolorid")]
-        public IActionResult GetDetailsByColorId(int colorId) {
-            var result = _carManager.GetDetailsByColorId(colorId);
-            if (result.Success) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("getdetailsbybrandid")]
-        public IActionResult GetDetailsByBrandId(int brandId) {
-            var result = _carManager.GetDetailsByBrandId(brandId);
             if (result.Success) {
                 return Ok(result);
             }

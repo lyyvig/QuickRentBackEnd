@@ -3,6 +3,7 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using Core.Utilities.Security.Hashing;
 using DataAccess.Abstract;
@@ -24,9 +25,34 @@ namespace Business.Concrete {
             _customerService = customerService;
         }
 
-        public IDataResult<List<OperationClaim>> GetClaims(User user) {
-            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
+        public IDataResult<List<OperationClaim>> GetUserClaims(int userId) {
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetUserClaims(userId));
         }
+
+        [SecuredOperation("admin")]
+        public IDataResult<List<OperationClaim>> GetOperationClaims() {
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetOperationClaims());
+            
+        }
+
+        [SecuredOperation("admin")]
+        public IResult AddClaim(UserOperationClaim operationClaim) {
+            var businessResult = BusinessRules.Run(
+                    CheckIfAlreadyHaveClaim(operationClaim)
+                );
+            if (businessResult != null) {
+                return businessResult;
+            }
+            _userDal.AddClaim(operationClaim);
+            return new SuccessResult();
+        }
+
+        [SecuredOperation("admin")]
+        public IResult DeleteClaim(UserOperationClaim operationClaim) {
+            _userDal.DeleteClaim(operationClaim);
+            return new SuccessResult();
+        }
+
 
         [CacheRemoveAspect("IUserService.Get")]
         public IResult Add(User user) {
@@ -43,7 +69,7 @@ namespace Business.Concrete {
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
             _userDal.Update(userToUpdate);
-            return new SuccessResult();
+            return new SuccessResult(Messages.InformationUpdated);
         }
 
         [SecuredOperation("admin")]
@@ -57,7 +83,7 @@ namespace Business.Concrete {
             if (result != null) {
                 return new SuccessDataResult<User>(result);
             }
-            return new ErrorDataResult<User>(Messages.UserNotExists);
+            return new ErrorDataResult<User>(Messages.UserDoesntExists);
         }
 
         public IDataResult<UserDto> GetUser(int id) {
@@ -69,7 +95,7 @@ namespace Business.Concrete {
                     Email = result.Email
                 });
             }
-            return new ErrorDataResult<UserDto>(Messages.UserNotExists);
+            return new ErrorDataResult<UserDto>(Messages.UserDoesntExists);
         }
 
         public IResult ChangePassword(ChangePasswordDto user) {
@@ -81,9 +107,17 @@ namespace Business.Concrete {
                 userToUpdate.PasswordHash = passwordHash;
                 userToUpdate.PasswordSalt = passwordSalt;
                 _userDal.Update(userToUpdate);
-                return new SuccessResult();
+                return new SuccessResult(Messages.PasswordUpdated);
             }
             return new ErrorResult(Messages.PasswordError);
+        }
+
+        private IResult CheckIfAlreadyHaveClaim(UserOperationClaim operationClaim) {
+            var claims = GetUserClaims(operationClaim.UserId);
+            if (claims.Data.Any(c => operationClaim.OperationClaimId == c.Id)) {
+                return new ErrorResult();
+            }
+            return new SuccessResult();
         }
 
         

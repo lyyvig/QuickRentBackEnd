@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstract {
     public interface IUserDal : IEntityRepository<User> {
-        List<OperationClaim> GetClaims(User user);
+        List<OperationClaim> GetUserClaims(int userId);
         List<UserDto> GetUsers();
+        List<OperationClaim> GetOperationClaims();
+        void AddClaim(UserOperationClaim operationClaim);
+        void DeleteClaim(UserOperationClaim operationClaim);
     }
 }

@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete {
     public class CarImage : IEntity {
-        public static CarImage GetDefault () {
-            return new CarImage() { ImagePath = "images/default.jpg" };
-        }
         public int Id { get; set; }
         public int CarId { get; set; }
         public string ImagePath { get; set; }

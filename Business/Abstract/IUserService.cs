@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract {
     public interface IUserService {
-        IDataResult<List<OperationClaim>> GetClaims(User user);
+        IDataResult<List<OperationClaim>> GetUserClaims(int userId);
+        IDataResult<List<OperationClaim>> GetOperationClaims();
+        IResult AddClaim(UserOperationClaim operationClaim);
+        IResult DeleteClaim(UserOperationClaim operationClaim);
         IDataResult<UserDto> GetUser(int id);
         IResult Add(User user);
         IResult Update(UserDto userForUpdate);

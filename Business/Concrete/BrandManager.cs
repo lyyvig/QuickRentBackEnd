@@ -22,7 +22,7 @@ namespace Business.Concrete {
             _brandDal = brandDal;
         }
 
-        //[SecuredOperation("admin,brand.all,brand.add")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IBrandService.Get")]
         [ValidationAspect(typeof(BrandValidator))]
         public IResult Add(Brand brand) {
@@ -31,32 +31,32 @@ namespace Business.Concrete {
                 return businessResult;
             }
             _brandDal.Add(brand);
-            return new SuccessResult(Messages.ItemAdded + brand.Name);
+            return new SuccessResult(Messages.BrandAdded);
         }
 
-        [SecuredOperation("admin,brand.all,brand.delete")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IBrandService.Get")]
         public IResult Delete(Brand brand) {
             _brandDal.Delete(brand);
-            return new SuccessResult(Messages.ItemDeleted + brand.Name);
+            return new SuccessResult(Messages.BrandDeleted);
         }
 
         [CacheAspect(10)]
         public IDataResult<Brand> Get(int brandId) {
-            return new SuccessDataResult<Brand>(_brandDal.Get(b => b.Id == brandId), Messages.ItemListed);
+            return new SuccessDataResult<Brand>(_brandDal.Get(b => b.Id == brandId));
         }
 
         [CacheAspect(10)]
         public IDataResult<List<Brand>> GetAll() {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.ItemsListed);
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll());
         }
         
-        //[SecuredOperation("admin,brand.all,brand.update")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IBrandService.Get")]
         [ValidationAspect(typeof(BrandValidator))]
         public IResult Update(Brand brand) {
             _brandDal.Update(brand);
-            return new SuccessResult(Messages.ItemUpdated + brand.Name);
+            return new SuccessResult(Messages.BrandUpdated);
         }
 
         private IResult CheckIfBrandExists(Brand brand) {
