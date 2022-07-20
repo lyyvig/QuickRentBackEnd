@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 namespace DataAccess.Concrete.EntityFramework {
     public class CarRentDbContext : DbContext {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlServer(@"Server = (localdb)\ProjectsV13 ; Database = CarRentDb ; Trusted_Connection = true");
+            string serverName = @"(localdb)\ProjectsV13";
+            string connectionString = String.Format("Server = {0} ; Database = CarRentDb ; Trusted_Connection = true", serverName);
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         public DbSet<Car> Cars { get; set; }
