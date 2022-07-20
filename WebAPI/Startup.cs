@@ -20,8 +20,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-//TODO  add user claims service
-
 
 namespace WebAPI {
     public class Startup {

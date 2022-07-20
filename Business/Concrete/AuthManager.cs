@@ -18,7 +18,6 @@ namespace Business.Concrete {
         }
 
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto) {
-            //TODO add claims to user on register
 
             var result = BusinessRules.Run(CheckIfUserAlreadyExists(userForRegisterDto.Email));
             if(result != null) {
